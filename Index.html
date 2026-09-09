@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#1a237e">
+<title>Metadatos para Bibliotecas</title>
+<style>
+/* ============================================ METADATOS PARA BIBLIOTECAS - ESTILOS ============================================ */
+:root { --primary: #1a237e; --primary-light: #3949ab; --primary-dark: #0d1642; --secondary: #ff6f00; --secondary-light: #ff9800; --accent: #00bcd4; --success: #4caf50; --warning: #ff9800; --error: #f44336; --bg: #f5f7fa; --surface: #ffffff; --surface-hover: #f8f9fa; --text-primary: #1a1a2e; --text-secondary: #6b7280; --text-muted: #9ca3af; --border: #e5e7eb; --border-light: #f3f4f6; --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); --radius-sm: 6px; --radius: 12px; --radius-lg: 16px; --radius-xl: 24px; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); --header-height: 64px; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+.icon { display: inline-block; vertical-align: middle; line-height: 1; margin-right: 0.3em; }
+.app-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow-lg); }
+.header-content { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; height: var(--header-height); display: flex; align-items: center; justify-content: space-between; }
+.logo { display: flex; align-items: center; gap: 0.75rem; }
+.logo h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+.logo h1 span { font-weight: 300; opacity: 0.9; }
+.menu-toggle { display: none; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 0.5rem; border-radius: var(--radius-sm); transition: var(--transition); }
+.menu-toggle:hover { background: rgba(255,255,255,0.15); }
+.main-nav { display: flex; gap: 0.25rem; }
+.nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 0.5rem 1rem; border-radius: var(--radius); font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; transition: var(--transition); }
+.nav-link:hover, .nav-link.active { color: white; background: rgba(255,255,255,0.15); }
+.main-content { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 2rem 1.5rem; }
+.section { display: none; animation: fadeIn 0.4s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border-light); }
+.section-header h2 { font-size: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+.search-container { max-width: 900px; margin: 0 auto; }
+.search-box { background: var(--surface); border-radius: var(--radius-xl); padding: 2.5rem; box-shadow: var(--shadow-lg); margin-bottom: 2rem; }
+.search-box h2 { font-size: 1.75rem; color: var(--primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
+.subtitle { color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 1rem; }
+.search-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tab-btn { padding: 0.625rem 1.25rem; border: 2px solid var(--border); background: var(--surface); border-radius: var(--radius); font-family: inherit; font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: var(--transition); }
+.tab-btn:hover { border-color: var(--primary-light); color: var(--primary); }
+.tab-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+.search-input-wrapper { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+#searchInput { flex: 1; padding: 1rem 1.25rem; border: 2px solid var(--border); border-radius: var(--radius); font-family: inherit; font-size: 1rem; color: var(--text-primary); background: var(--bg); transition: var(--transition); }
+#searchInput:focus { outline: none; border-color: var(--primary-light); background: var(--surface); box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1); }
+#searchInput::placeholder { color: var(--text-muted); }
+.btn-primary { padding: 1rem 2rem; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%); color: white; border: none; border-radius: var(--radius); font-family: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: var(--transition); white-space: nowrap; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.btn-secondary { padding: 1rem; background: var(--border-light); color: var(--text-secondary); border: none; border-radius: var(--radius); font-family: inherit; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); width: 48px; }
+.btn-secondary:hover { background: var(--error); color: white; }
+.btn-text { background: none; border: none; color: var(--error); font-family: inherit; font-size: 0.875rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border-radius: var(--radius-sm); transition: var(--transition); }
+.btn-text:hover { background: rgba(244, 67, 54, 0.1); }
+.search-options { margin-top: 1rem; }
+.checkbox-label { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem; color: var(--text-secondary); user-select: none; }
+.checkbox-label input { display: none; }
+.checkmark { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: var(--transition); flex-shrink: 0; font-size: 12px; color: transparent; }
+.checkbox-label input:checked + .checkmark { background: var(--primary); border-color: var(--primary); color: white; }
+.loading-state { text-align: center; padding: 3rem; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+.loading-state.hidden { display: none; }
+.spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1.5rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.source-indicators { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.source-indicator { padding: 0.5rem 1rem; background: var(--bg); border-radius: var(--radius); font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; transition: var(--transition); }
+.source-indicator.searching { color: var(--primary); background: rgba(26, 35, 126, 0.1); animation: pulse 1.5s ease infinite; }
+.source-indicator.found { color: var(--success); background: rgba(76, 175, 80, 0.1); }
+.source-indicator.not-found { color: var(--text-muted); opacity: 0.6; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.empty-state { text-align: center; padding: 4rem 2rem; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+.empty-state.hidden { display: none; }
+.examples { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+.example-tag { padding: 0.625rem 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem; color: var(--primary); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: var(--transition); }
+.example-tag:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-2px); }
+.results-container { display: flex; flex-direction: column; gap: 1rem; }
+.results-container.hidden { display: none; }
+.result-card { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; transition: var(--transition); border: 1px solid var(--border-light); }
+.result-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.result-header { display: flex; gap: 1.5rem; padding: 1.5rem; }
+.result-cover { width: 120px; height: 170px; flex-shrink: 0; border-radius: var(--radius-sm); overflow: hidden; background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+.result-cover img { width: 100%; height: 100%; object-fit: cover; }
+.result-info { flex: 1; min-width: 0; }
+.result-title { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; line-height: 1.3; }
+.result-authors { font-size: 1rem; color: var(--primary); font-weight: 500; margin-bottom: 0.75rem; }
+.result-meta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
+.meta-tag { padding: 0.375rem 0.75rem; background: var(--bg); border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.375rem; }
+.result-source { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.875rem; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 500; }
+.source-google { background: rgba(66, 133, 244, 0.1); color: #4285f4; }
+.source-openlib { background: rgba(255, 111, 0, 0.1); color: #e65100; }
+.source-crossref { background: rgba(0, 188, 212, 0.1); color: #00838f; }
+.result-description { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.result-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.btn-action { padding: 0.5rem 1rem; border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 0.375rem; transition: var(--transition); }
+.btn-action:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.btn-action.favorite { color: var(--secondary); border-color: var(--secondary-light); }
+.btn-action.favorite:hover, .btn-action.favorite.active { background: var(--secondary); color: white; }
+.result-footer { padding: 1rem 1.5rem; background: var(--bg); border-top: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; }
+.export-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.btn-export { padding: 0.375rem 0.75rem; border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 0.375rem; transition: var(--transition); }
+.btn-export:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+.history-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.history-list.hidden { display: none; }
+.history-item { background: var(--surface); border-radius: var(--radius); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); cursor: pointer; transition: var(--transition); }
+.history-item:hover { box-shadow: var(--shadow); border-color: var(--primary-light); }
+.history-icon { width: 40px; height: 40px; border-radius: var(--radius); background: var(--bg); display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0; }
+.history-info { flex: 1; min-width: 0; }
+.history-query { font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.history-details { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1rem; flex-wrap: wrap; }
+.history-actions { display: flex; gap: 0.5rem; }
+.history-btn { width: 36px; height: 36px; border: none; background: var(--bg); border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+.history-btn:hover { background: var(--primary); color: white; }
+.history-btn.delete:hover { background: var(--error); }
+.help-container { max-width: 900px; margin: 0 auto; }
+.help-container h2 { font-size: 1.75rem; color: var(--primary); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem; }
+.help-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+.help-card { background: var(--surface); border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow); text-align: center; transition: var(--transition); border: 1px solid var(--border-light); }
+.help-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.help-icon { width: 60px; height: 60px; border-radius: var(--radius); background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 1rem; }
+.help-card h3 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.75rem; }
+.help-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem; }
+.help-example { padding: 0.5rem 1rem; background: var(--bg); border-radius: var(--radius-sm); font-size: 0.85rem; color: var(--primary); font-family: 'Courier New', monospace; word-break: break-all; }
+.help-section { background: var(--surface); border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow); margin-bottom: 1.5rem; border: 1px solid var(--border-light); }
+.help-section h3 { font-size: 1.25rem; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+.help-section p { color: var(--text-secondary); margin-bottom: 1rem; }
+.format-badges { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.format-badge { padding: 0.625rem 1.25rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
+.source-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+.source-list li { padding: 0.875rem 1rem; background: var(--bg); border-radius: var(--radius); display: flex; align-items: center; gap: 0.75rem; font-size: 0.95rem; color: var(--text-secondary); }
+.modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); }
+.modal.active { display: flex; }
+.modal-content { background: var(--surface); border-radius: var(--radius-xl); max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: var(--shadow-xl); animation: modalIn 0.3s ease; }
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+.modal-close { position: absolute; top: 1rem; right: 1rem; width: 40px; height: 40px; border: none; background: var(--bg); border-radius: 50%; color: var(--text-secondary); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); z-index: 10; }
+.modal-close:hover { background: var(--error); color: white; }
+.modal-body { padding: 2rem; }
+.modal-cover { width: 100%; max-width: 200px; height: 280px; margin: 0 auto 1.5rem; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); }
+.modal-cover img { width: 100%; height: 100%; object-fit: cover; }
+.modal-title { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; text-align: center; }
+.modal-authors { font-size: 1.1rem; color: var(--primary); text-align: center; margin-bottom: 1.5rem; }
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.detail-item { padding: 1rem; background: var(--bg); border-radius: var(--radius); }
+.detail-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+.detail-value { font-size: 0.95rem; color: var(--text-primary); font-weight: 500; word-break: break-word; }
+.modal-description { padding: 1rem; background: var(--bg); border-radius: var(--radius); font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem; }
+.modal-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+.toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 3000; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none; }
+.toast { padding: 1rem 1.5rem; border-radius: var(--radius); color: white; font-size: 0.95rem; font-weight: 500; display: flex; align-items: center; gap: 0.75rem; box-shadow: var(--shadow-lg); animation: toastIn 0.3s ease; pointer-events: all; max-width: 400px; }
+.toast.success { background: var(--success); }
+.toast.error { background: var(--error); }
+.toast.warning { background: var(--warning); }
+.toast.info { background: var(--primary); }
+@keyframes toastIn { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+.app-footer { background: var(--primary-dark); color: rgba(255,255,255,0.7); text-align: center; padding: 1.5rem; margin-top: auto; }
+.app-footer p { font-size: 0.9rem; }
+.footer-note { font-size: 0.8rem; opacity: 0.7; margin-top: 0.25rem; }
+.hidden { display: none !important; }
+@media (max-width: 768px) { :root { --header-height: 56px; } .header-content { padding: 0 1rem; } .logo h1 { font-size: 1.25rem; } .menu-toggle { display: block; } .main-nav { position: absolute; top: var(--header-height); left: 0; right: 0; background: var(--primary-dark); flex-direction: column; padding: 1rem; gap: 0.25rem; transform: translateY(-100%); opacity: 0; pointer-events: none; transition: var(--transition); } .main-nav.active { transform: translateY(0); opacity: 1; pointer-events: all; } .nav-link { padding: 0.875rem 1rem; border-radius: var(--radius-sm); } .main-content { padding: 1rem; } .search-box { padding: 1.5rem; border-radius: var(--radius-lg); } .search-box h2 { font-size: 1.35rem; } .search-tabs { gap: 0.375rem; } .tab-btn { padding: 0.5rem 0.875rem; font-size: 0.85rem; } .search-input-wrapper { flex-direction: column; } .btn-primary { justify-content: center; } .btn-secondary { width: 100%; padding: 0.75rem; } .result-header { flex-direction: column; align-items: center; text-align: center; padding: 1.25rem; } .result-cover { width: 100px; height: 140px; } .result-actions { justify-content: center; } .result-footer { flex-direction: column; align-items: stretch; } .export-buttons { justify-content: center; } .help-grid { grid-template-columns: 1fr; } .history-item { padding: 1rem; } .history-actions { flex-direction: column; } .toast-container { left: 1rem; right: 1rem; bottom: 1rem; } .toast { max-width: 100%; } .modal-content { margin: 0.5rem; max-height: 95vh; } .modal-body { padding: 1.5rem; } .detail-grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .search-box { padding: 1.25rem; } .examples { flex-direction: column; align-items: stretch; } .example-tag { justify-content: center; } .source-indicators { flex-direction: column; align-items: center; } .results-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="app-header">
+<div class="header-content">
+<div class="logo"><span class="icon" style="font-size:1.75rem;">&#128214;</span><h1>Metadatos<span>Biblio</span></h1></div>
+<button class="menu-toggle" id="menuToggle" aria-label="Menu"><span class="icon" style="font-size:1.5rem;">&#9776;</span></button>
+<nav class="main-nav" id="mainNav">
+<a href="#buscar" class="nav-link active"><span class="icon">&#128269;</span> Buscar</a>
+<a href="#historial" class="nav-link"><span class="icon">&#128368;</span> Historial</a>
+<a href="#favoritos" class="nav-link"><span class="icon">&#11088;</span> Favoritos</a>
+<a href="#ayuda" class="nav-link"><span class="icon">&#10067;</span> Ayuda</a>
+</nav>
+</div>
+</header>
+
+<main class="main-content">
+<section id="buscar" class="section active">
+<div class="search-container">
+<div class="search-box">
+<h2><span class="icon">&#128269;</span> Recuperar Metadatos Bibliograficos</h2>
+<p class="subtitle">Busca por ISBN, titulo, autor o DOI en multiples fuentes</p>
+<div class="search-tabs">
+<button class="tab-btn active" data-tab="isbn"><span class="icon">&#128443;</span> ISBN</button>
+<button class="tab-btn" data-tab="titulo"><span class="icon">&#128240;</span> Titulo</button>
+<button class="tab-btn" data-tab="autor"><span class="icon">&#128100;</span> Autor</button>
+<button class="tab-btn" data-tab="doi"><span class="icon">&#128279;</span> DOI</button>
+</div>
+<div class="search-input-wrapper">
+<input type="text" id="searchInput" placeholder="Ingresa ISBN (10 o 13 digitos)..." autocomplete="off">
+<button id="searchBtn" class="btn-primary"><span class="icon">&#128269;</span> Buscar</button>
+<button id="clearBtn" class="btn-secondary" title="Limpiar"><span class="icon">&#10005;</span></button>
+</div>
+<div class="search-options">
+<label class="checkbox-label"><input type="checkbox" id="multiSource" checked><span class="checkmark">&#10003;</span>Buscar en multiples fuentes (Google Books, Open Library, CrossRef)</label>
+</div>
+</div>
+
+<div id="loadingState" class="loading-state hidden">
+<div class="spinner"></div>
+<p>Buscando en multiples fuentes...</p>
+<div class="source-indicators">
+<span class="source-indicator" data-source="google"><span class="icon">&#128270;</span> Google Books</span>
+<span class="source-indicator" data-source="openlib"><span class="icon">&#128218;</span> Open Library</span>
+<span class="source-indicator" data-source="crossref"><span class="icon">&#127891;</span> CrossRef</span>
+</div>
+</div>
+
+<div id="resultsContainer" class="results-container"></div>
+
+<div id="emptyState" class="empty-state">
+<span class="icon" style="font-size:4rem;display:block;margin-bottom:1rem;">&#128214;</span>
+<h3>Comienza tu busqueda</h3>
+<p>Ingresa un ISBN, titulo, autor o DOI para recuperar metadatos bibliograficos</p>
+<div class="examples">
+<span class="example-tag" data-type="isbn" data-value="9788497592208"><span class="icon">&#128443;</span> 9788497592208</span>
+<span class="example-tag" data-type="titulo" data-value="Cien anos de soledad"><span class="icon">&#128240;</span> Cien anos de soledad</span>
+<span class="example-tag" data-type="autor" data-value="Gabriel Garcia Marquez"><span class="icon">&#128100;</span> Gabriel Garcia Marquez</span>
+<span class="example-tag" data-type="doi" data-value="10.1038/s41586-021-03819-2"><span class="icon">&#128279;</span> DOI de ejemplo</span>
+</div>
+</div>
+</div>
+</section>
+
+<section id="historial" class="section">
+<div class="section-header">
+<h2><span class="icon">&#128368;</span> Historial de Busquedas</h2>
+<button id="clearHistory" class="btn-text"><span class="icon">&#128465;</span> Limpiar historial</button>
+</div>
+<div id="historyList" class="history-list"></div>
+<div id="historyEmpty" class="empty-state">
+<span class="icon" style="font-size:4rem;display:block;margin-bottom:1rem;">&#128368;</span>
+<h3>Sin historial</h3>
+<p>Tus busquedas recientes apareceran aqui</p>
+</div>
+</section>
+
+<section id="favoritos" class="section">
+<div class="section-header">
+<h2><span class="icon">&#11088;</span> Favoritos</h2>
+<button id="clearFavorites" class="btn-text"><span class="icon">&#128465;</span> Limpiar favoritos</button>
+</div>
+<div id="favoritesList" class="results-grid"></div>
+<div id="favoritesEmpty" class="empty-state">
+<span class="icon" style="font-size:4rem;display:block;margin-bottom:1rem;">&#11088;</span>
+<h3>Sin favoritos</h3>
+<p>Guarda resultados como favoritos para acceder rapidamente</p>
+</div>
+</section>
+
+<section id="ayuda" class="section">
+<div class="help-container">
+<h2><span class="icon">&#10067;</span> Como usar la aplicacion</h2>
+<div class="help-grid">
+<div class="help-card">
+<div class="help-icon"><span class="icon">&#128443;</span></div>
+<h3>Buscar por ISBN</h3>
+<p>Ingresa el ISBN-10 o ISBN-13 del libro. Es el metodo mas preciso para obtener metadatos exactos.</p>
+<div class="help-example">Ej: 9788497592208</div>
+</div>
+<div class="help-card">
+<div class="help-icon"><span class="icon">&#128240;</span></div>
+<h3>Buscar por Titulo</h3>
+<p>Escribe el titulo completo o parcial del libro. Puedes incluir el autor para mayor precision.</p>
+<div class="help-example">Ej: Cien anos de soledad</div>
+</div>
+<div class="help-card">
+<div class="help-icon"><span class="icon">&#128100;</span></div>
+<h3>Buscar por Autor</h3>
+<p>Ingresa el nombre del autor para ver todas sus obras disponibles en las fuentes consultadas.</p>
+<div class="help-example">Ej: Gabriel Garcia Marquez</div>
+</div>
+<div class="help-card">
+<div class="help-icon"><span class="icon">&#128279;</span></div>
+<h3>Buscar por DOI</h3>
+<p>Para articulos academicos, ingresa el DOI (Digital Object Identifier) para obtener metadatos precisos.</p>
+<div class="help-example">Ej: 10.1038/s41586-021-03819-2</div>
+</div>
+</div>
+<div class="help-section">
+<h3><span class="icon">&#11015;</span> Formatos de exportacion</h3>
+<p>Los resultados pueden exportarse en los siguientes formatos:</p>
+<div class="format-badges">
+<span class="format-badge"><span class="icon">&#128196;</span> BibTeX</span>
+<span class="format-badge"><span class="icon">&#128195;</span> RIS</span>
+<span class="format-badge"><span class="icon">&#128202;</span> CSV</span>
+<span class="format-badge"><span class="icon">&#128203;</span> JSON</span>
+</div>
+</div>
+<div class="help-section">
+<h3><span class="icon">&#128451;</span> Fuentes de datos</h3>
+<p>La aplicacion consulta automaticamente multiples fuentes:</p>
+<ul class="source-list">
+<li><span class="icon">&#128270;</span> <strong>Google Books API</strong> - Millones de libros con metadatos completos</li>
+<li><span class="icon">&#128218;</span> <strong>Open Library</strong> - Catalogo abierto de Internet Archive</li>
+<li><span class="icon">&#127891;</span> <strong>CrossRef</strong> - Metadatos de literatura academica y DOI</li>
+</ul>
+</div>
+</div>
+</section>
+</main>
+
+<footer class="app-footer">
+<p><span class="icon">&#128214;</span> Metadatos para Bibliotecas - App web gratuita</p>
+<p class="footer-note">Datos proporcionados por Google Books, Open Library y CrossRef</p>
+</footer>
+
+<div id="toastContainer" class="toast-container"></div>
+<div id="detailModal" class="modal">
+<div class="modal-content">
+<button class="modal-close" id="modalClose"><span class="icon">&#10005;</span></button>
+<div id="modalBody"></div>
+</div>
+</div>
+
+<script>
+// ============================================ UTILS ============================================
+const Utils={isValidISBN10(e){e=e.replace(/[-s]/g,"");if(10!==e.length)return!1;if(!/^d{9}[dXx]$/.test(e))return!1;let t=0;for(let n=0;n<10;n++){const r="X"===e[n].toUpperCase()?10:parseInt(e[n]);t+=r*(10-n)}return t%11==0},isValidISBN13(e){e=e.replace(/[-s]/g,"");if(13!==e.length)return!1;if(!/^d{13}$/.test(e))return!1;let t=0;for(let n=0;n<13;n++)t+=parseInt(e[n])*(n%2==0?1:3);return t%10==0},detectQueryType(e){const t=e.trim();return/^10.d{4,}///.test(t)||/^doi:/i.test(t)?"doi":/^d{13}$/.test(t.replace(/[-s]/g,""))?"isbn":/^d{9}[dXx]$/.test(t.replace(/[-s]/g,""))?"isbn":/^[d-Xxs]{10,17}$/.test(t)?"isbn":null},cleanISBN:e=>e.replace(/[-s]/g,"").toUpperCase(),isbn10to13(e){e=this.cleanISBN(e);if(10!==e.length)return null;let t="978"+e.substring(0,9);let n=0;for(let e=0;e<12;e++)n+=parseInt(t[e])*(e%2==0?1:3);const r=(10-(n%10))%10;return t+r},formatISBN(e){e=this.cleanISBN(e);return 13===e.length?e.replace(/(d{3})(d{1})(d{3})(d{5})(d{1})/,"$1-$2-$3-$4-$5"):10===e.length?e.replace(/(d{1})(d{3})(d{5})([dX])/,"$1-$2-$3-$4"):e},truncate(e,t=200){return e&&e.length>t?e.substring(0,t).trim()+"...":e},formatDate(e){if(!e)return"N/A";const t=new Date(e);return isNaN(t.getTime())?e:t.toLocaleDateString("es-ES",{year:"numeric",month:"long",day:"numeric"})},formatYear:e=>{if(!e)return null;const t=e.toString().match(/(d{4})/);return t?t[1]:e},generateId:()=>Date.now().toString(36)+Math.random().toString(36).substr(2,9),escapeBibTeX(e){return e?e.replace(/\\/g,"textbackslash{}").replace(/&/g,"\\&").replace(/%/g,"\\%").replace(/$/g,"\\$").replace(/#/g,"\\#").replace(/_/g,"\\_").replace(/{/g,"\\{").replace(/}/g,"\\}").replace(/~/g,"textasciitilde{}").replace(/^/g,"textasciicircum{}"):""},generateBibKey(e,t,n){let r="";if(e&&e.length>0){const t=e[0];let n=t.includes(",")?t.split(",")[0].trim():t.split(" ").pop();r+=this.removeAccents(n).toLowerCase()}return t&&(r+=t),n&&(r+=this.removeAccents(n.split(" ")[0]).toLowerCase()),r||"ref"+Math.floor(1e4*Math.random())},removeAccents:e=>e?e.normalize("NFD").replace(/[u0300-u036f]/g,""):"",exportBibTeX(e){const t=e.authors||[],n=this.formatYear(e.publishedDate)||"n.d.",r=this.generateBibKey(t,n,e.title);let i=`@book{${r},n  title = {${this.escapeBibTeX(e.title)}},n`;if(t.length>0)if(1===t.length)i+=`  author = {${this.escapeBibTeX(t[0])}},n`;else if(2===t.length)i+=`  author = {${this.escapeBibTeX(t.join(" and "))}},n`;else{const e=t.slice(0,-1).join(" and "),n=t[t.length-1];i+=`  author = {${this.escapeBibTeX(e)} and ${this.escapeBibTeX(n)}},n`}return e.publisher&&(i+=`  publisher = {${this.escapeBibTeX(e.publisher)}},n`),"n.d."!==n&&(i+=`  year = {${n}},n`),e.isbn&&(i+=`  isbn = {${e.isbn}},n`),e.pageCount&&(i+=`  pages = {${e.pageCount}},n`),e.language&&(i+=`  language = {${e.language}},n`),e.categories&&e.categories.length>0&&(i+=`  keywords = {${this.escapeBibTeX(e.categories.join(", "))}},n`),i+="}"},exportRIS(e){let t="TY  - BOOKn";t+=`TI  - ${e.title}n`,(e.authors||[]).forEach(e=>{t+=`AU  - ${e}n`});return e.publisher&&(t+=`PB  - ${e.publisher}n`),e.publishedDate&&(t+=`PY  - ${this.formatYear(e.publishedDate)}n`),e.isbn&&(t+=`SN  - ${e.isbn}n`),e.pageCount&&(t+=`SP  - ${e.pageCount}n`),e.language&&(t+=`LA  - ${e.language}n`),e.description&&(t+=`AB  - ${e.description}n`),e.categories&&e.categories.length>0&&(t+=`KW  - ${e.categories.join(", ")}n`),e.infoLink&&(t+=`UR  - ${e.infoLink}n`),t+="ER  - "},exportCSV(e){Array.isArray(e)||(e=[e]);const t=["Titulo","Autores","Editorial","Ano","ISBN","Paginas","Idioma","Categorias","Descripcion","Fuente"];let n="uFEFF";n+=t.join(";")+"n";return e.forEach(e=>{const t=[e.title||"",(e.authors||[]).join(", "),e.publisher||"",this.formatYear(e.publishedDate)||"",e.isbn||"",e.pageCount||"",e.language||"",(e.categories||[]).join(", "),e.description?e.description.replace(/[rn]+/g," "):"",e.source||""];n+=t.map(e=>`"${e.replace(/"/g,'""')}"`).join(";")+"n"}),n},exportJSON:e=>JSON.stringify(e,null,2),downloadFile(e,t,n="text/plain"){const r=new Blob([e],{type:n+";charset=utf-8"}),i=URL.createObjectURL(r),a=document.createElement("a");a.href=i,a.download=t,document.body.appendChild(a),a.click(),document.body.removeChild(a),URL.revokeObjectURL(i)},showToast(e,t="info",n=3e3){const r=document.getElementById("toastContainer"),i=document.createElement("div");i.className=`toast ${t}`;const a={success:"&#9989;",error:"&#10060;",warning:"&#9888;",info:"&#8505;"};i.innerHTML=`<span style="margin-right:0.5rem;">${a[t]||a.info}</span> ${e}`,r.appendChild(i),setTimeout(()=>{i.remove()},n)},debounce(e,t){let n;return function(...r){const i=()=>{clearTimeout(n),e(...r)};clearTimeout(n),n=setTimeout(i,t)}},parseAuthors(e){return e?Array.isArray(e)?e.filter(e=>e&&e.trim()):typeof e=="string"?e.split(/[,;]/).map(e=>e.trim()).filter(e=>e):[]:[]},normalizeBook(e,t){const n={id:e.id||this.generateId(),title:e.title||"Sin titulo",authors:this.parseAuthors(e.authors),publisher:e.publisher||null,publishedDate:e.publishedDate||e.year||null,isbn:e.isbn||e.ISBN||null,isbn13:e.isbn13||null,isbn10:e.isbn10||null,pageCount:e.pageCount||e.pages||null,language:e.language||null,categories:e.categories||e.subjects||[],description:e.description||e.abstract||null,coverUrl:e.coverUrl||e.thumbnail||e.imageLinks?.thumbnail||null,infoLink:e.infoLink||e.url||null,source:t||e.source||"unknown",timestamp:Date.now()};if(n.isbn){const e=this.cleanISBN(n.isbn);13===e.length?n.isbn13=e:10===e.length&&(n.isbn10=e,n.isbn13=this.isbn10to13(e)),n.isbn=n.isbn13||n.isbn10||n.isbn}return n}};
+
+// ============================================ STORAGE ============================================
+const Storage={KEYS:{HISTORY:"biblio_history",FAVORITES:"biblio_favorites",SETTINGS:"biblio_settings"},get(e,t=[]){try{const t=localStorage.getItem(e);return t?JSON.parse(t):t}catch(n){return console.error("Error reading localStorage:",n),t}},set(e,t){try{return localStorage.setItem(e,JSON.stringify(t)),!0}catch(n){if(console.error("Error writing localStorage:",n),"QuotaExceededError"===n.name){this.cleanup();try{return localStorage.setItem(e,JSON.stringify(t)),!0}catch(e){return Utils.showToast("Espacio de almacenamiento lleno","error"),!1}}return!1}},cleanup(){const e=this.getHistory(),t=this.getFavorites();e.length>50&&this.set(this.KEYS.HISTORY,e.slice(-50)),t.length>0&&this.set(this.KEYS.FAVORITES,t.map(e=>({...e,description:e.description?e.description.substring(0,500):null})))},getHistory:()=>Storage.get(Storage.KEYS.HISTORY,[]),addHistory(e,t,n){const r=Storage.getHistory(),i={id:Utils.generateId(),query:e.trim(),type:t,resultsCount:n,timestamp:Date.now()},a=r[r.length-1];if(a&&a.query===i.query&&a.type===i.type)return a.timestamp=i.timestamp,a.resultsCount=i.resultsCount,Storage.set(Storage.KEYS.HISTORY,r),i;return r.push(i),r.length>100&&r.shift(),Storage.set(Storage.KEYS.HISTORY,r),i},removeHistory(e){const t=Storage.getHistory().filter(t=>t.id!==e);return Storage.set(Storage.KEYS.HISTORY,t),t},clearHistory:()=>Storage.set(Storage.KEYS.HISTORY,[]),getFavorites:()=>Storage.get(Storage.KEYS.FAVORITES,[]),addFavorite(e){const t=Storage.getFavorites();if(t.some(t=>e.isbn&&t.isbn===e.isbn||e.doi&&t.doi===e.doi||t.title===e.title&&JSON.stringify(t.authors)===JSON.stringify(e.authors)))return Utils.showToast("Este libro ya esta en favoritos","warning"),!1;return t.push({...e,favoritedAt:Date.now()}),Storage.set(Storage.KEYS.FAVORITES,t),Utils.showToast("Agregado a favoritos","success"),!0},removeFavorite(e){const t=Storage.getFavorites().filter(t=>t.id!==e);return Storage.set(Storage.KEYS.FAVORITES,t),Utils.showToast("Eliminado de favoritos","info"),t},isFavorite:e=>Storage.getFavorites().some(t=>t.id===e),toggleFavorite(e){return Storage.isFavorite(e.id)?(Storage.removeFavorite(e.id),!1):(Storage.addFavorite(e),!0)},clearFavorites:()=>Storage.set(Storage.KEYS.FAVORITES,[]),getSettings:()=>Storage.get(Storage.KEYS.SETTINGS,{multiSource:!0,defaultFormat:"bibtex"}),saveSettings(e){const t=this.getSettings();Storage.set(Storage.KEYS.SETTINGS,{...t,...e})}};
+
+// ============================================ APP ============================================
+const App={currentTab:"isbn",isSearching:!1,currentResults:[],init(){this.setupNavigation(),this.setupSearchTabs(),this.setupSearchInput(),this.setupExamples(),this.setupModal(),this.setupHistory(),this.setupFavorites(),this.loadHistory(),this.loadFavorites();const e=Storage.getSettings();document.getElementById("multiSource").checked=e.multiSource},setupNavigation(){const e=document.getElementById("menuToggle"),t=document.getElementById("mainNav"),n=document.querySelectorAll(".nav-link"),r=document.querySelectorAll(".section");e?.addEventListener("click",()=>{t.classList.toggle("active");const n=e.querySelector(".icon");n.textContent=t.classList.contains("active")?"&#10005;":"&#9776;"}),n.forEach(e=>{e.addEventListener("click",i=>{i.preventDefault();const a=e.getAttribute("href").substring(1);n.forEach(e=>e.classList.remove("active")),e.classList.add("active"),r.forEach(e=>e.classList.remove("active")),document.getElementById(a).classList.add("active"),t.classList.remove("active");const o=e.querySelector(".icon");o&&(o.textContent="&#9776;"),window.scrollTo({top:0,behavior:"smooth"}),"historial"===a&&this.loadHistory(),"favoritos"===a&&this.loadFavorites()})})},setupSearchTabs(){const e=document.querySelectorAll(".tab-btn"),t=document.getElementById("searchInput"),n={isbn:"Ingresa ISBN (10 o 13 digitos)...",titulo:"Ingresa el titulo del libro...",autor:"Ingresa el nombre del autor...",doi:"Ingresa el DOI (ej: 10.xxxx/xxxxx)..."};e.forEach(r=>{r.addEventListener("click",()=>{e.forEach(e=>e.classList.remove("active")),r.classList.add("active"),this.currentTab=r.dataset.tab,t.placeholder=n[this.currentTab],t.value="",t.focus()})})},setupSearchInput(){const e=document.getElementById("searchInput"),t=document.getElementById("searchBtn"),n=document.getElementById("clearBtn");e.addEventListener("keypress",e=>{"Enter"===e.key&&this.performSearch()}),t.addEventListener("click",()=>this.performSearch()),n.addEventListener("click",()=>{e.value="",this.clearResults(),e.focus()}),e.addEventListener("input",Utils.debounce(e=>{const t=Utils.detectQueryType(e.target.value);t&&t!==this.currentTab&&document.querySelector(`.tab-btn[data-tab="${t}"]`)?.click()},300))},setupExamples(){document.querySelectorAll(".example-tag").forEach(e=>{e.addEventListener("click",()=>{const t=e.dataset.type,n=e.dataset.value;document.querySelector(`.tab-btn[data-tab="${t}"]`)?.click(),document.getElementById("searchInput").value=n,this.performSearch()})})},async performSearch(){const e=document.getElementById("searchInput"),t=e.value.trim();if(!t)return void Utils.showToast("Ingresa un termino de busqueda","warning");if(this.isSearching)return;this.isSearching=!0;const n=document.getElementById("multiSource").checked;this.showLoading(!0),this.clearResults();try{let r=[];if(n){const e=[];if("doi"===this.currentTab)e.push(this.searchCrossRef(t));else{e.push(this.searchGoogleBooks(t,this.currentTab)),e.push(this.searchOpenLibrary(t,this.currentTab)),"isbn"===this.currentTab&&e.push(this.searchCrossRef(t))}const n=await Promise.allSettled(e),i=[];n.forEach(e=>{"fulfilled"===e.status&&e.value&&i.push(...e.value)}),r=this.deduplicateResults(i)}else r=await this.searchGoogleBooks(t,this.currentTab);this.currentResults=r,Storage.addHistory(t,this.currentTab,r.length),this.displayResults(r),0===r.length?Utils.showToast("No se encontraron resultados","warning"):Utils.showToast(`${r.length} resultado(s) encontrado(s)`,"success")}catch(e){console.error("Search error:",e),Utils.showToast("Error al realizar la busqueda","error")}finally{this.showLoading(!1),this.isSearching=!1}},async searchGoogleBooks(e,t){this.updateSourceIndicator("google","searching");try{let n=e;"isbn"===t?n=`isbn:${Utils.cleanISBN(e)}`:"autor"===t?n=`inauthor:"${e}"`:"titulo"===t&&(n=`intitle:"${e}"`);const r=await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(n)}&maxResults=10&langRestrict=es`),i=await r.json();if(!i.items||0===i.items.length)return this.updateSourceIndicator("google","not-found"),[];const a=i.items.map(e=>{const t=e.volumeInfo||{},n=(t.industryIdentifiers||[]).find(e=>"ISBN_13"===e.type)?.identifier,r=(t.industryIdentifiers||[]).find(e=>"ISBN_10"===e.type)?.identifier;return Utils.normalizeBook({id:e.id||Utils.generateId(),title:t.title,subtitle:t.subtitle,authors:t.authors,publisher:t.publisher,publishedDate:t.publishedDate,isbn:n||r,isbn13:n,isbn10:r,pageCount:t.pageCount,language:t.language,categories:t.categories,description:t.description,coverUrl:t.imageLinks?.thumbnail||t.imageLinks?.smallThumbnail,infoLink:t.infoLink,previewLink:t.previewLink,source:"Google Books"},"Google Books")});return this.updateSourceIndicator("google","found"),a}catch(e){return console.error("Google Books error:",e),this.updateSourceIndicator("google","not-found"),[]}},async searchOpenLibrary(e,t){this.updateSourceIndicator("openlib","searching");try{let n;"isbn"===t?n=`https://openlibrary.org/isbn/${Utils.cleanISBN(e)}.json`:"autor"===t?n=`https://openlibrary.org/search.json?author=${encodeURIComponent(e)}&limit=10`:n=`https://openlibrary.org/search.json?q=${encodeURIComponent(e)}&limit=10`;const r=await fetch(n);if("isbn"===t){if(!r.ok)return this.updateSourceIndicator("openlib","not-found"),[];const e=await r.json();let t=[];if(e.authors)for(const n of e.authors.slice(0,3))try{const r=await fetch(`https://openlibrary.org${n.key}.json`),i=await r.json();t.push(i.name)}catch(e){}const n=Utils.normalizeBook({id:e.key||Utils.generateId(),title:e.title,authors:t.length>0?t:e.author_name,publisher:e.publishers?.[0],publishedDate:e.publish_date||e.first_publish_date,isbn:e.isbn_13?.[0]||e.isbn_10?.[0],isbn13:e.isbn_13?.[0],isbn10:e.isbn_10?.[0],pageCount:e.number_of_pages,language:e.languages?.[0]?.key?.replace("/languages/",""),categories:e.subjects,description:"string"==typeof e.description?e.description:e.description?.value,coverUrl:e.covers?`https://covers.openlibrary.org/b/id/${e.covers[0]}-M.jpg`:null,infoLink:`https://openlibrary.org${e.key}`,source:"Open Library"},"Open Library");return this.updateSourceIndicator("openlib","found"),[n]}{const e=await r.json();if(!e.docs||0===e.docs.length)return this.updateSourceIndicator("openlib","not-found"),[];const t=e.docs.slice(0,10).map(e=>Utils.normalizeBook({id:e.key||Utils.generateId(),title:e.title,authors:e.author_name,publisher:e.publisher?.[0],publishedDate:e.first_publish_year?.toString()||e.publish_date?.[0],isbn:e.isbn?.[0],isbn13:e.isbn?.find(e=>13===e.length),isbn10:e.isbn?.find(e=>10===e.length),pageCount:e.number_of_pages_median,language:e.language?.[0],categories:e.subject,coverUrl:e.cover_i?`https://covers.openlibrary.org/b/id/${e.cover_i}-M.jpg`:null,infoLink:`https://openlibrary.org${e.key}`,source:"Open Library"},"Open Library"));return this.updateSourceIndicator("openlib","found"),t}}catch(e){return console.error("Open Library error:",e),this.updateSourceIndicator("openlib","not-found"),[]}},async searchCrossRef(e){this.updateSourceIndicator("crossref","searching");try{if("doi"===this.currentTab||e.startsWith("10.")){const t=e.replace(/^doi:/i,"").trim(),n=await fetch(`https://api.crossref.org/works/${encodeURIComponent(t)}`);if(!n.ok)return this.updateSourceIndicator("crossref","not-found"),[];const r=await n.json(),i=r.message,a=Utils.normalizeBook({id:i.DOI||Utils.generateId(),title:Array.isArray(i.title)?i.title[0]:i.title,authors:(i.author||[]).map(e=>`${e.given||""} ${e.family||""}`.trim()),publisher:i.publisher,publishedDate:i.published?.["date-parts"]?.[0]?.join("-")||i.created?.["date-time"],isbn:i.ISBN?.[0],pageCount:i.page,language:i.language,categories:i.subject,description:i.abstract?i.abstract.replace(/<[^>]*>/g,""):null,infoLink:i.URL||`https://doi.org/${i.DOI}`,doi:i.DOI,source:"CrossRef"},"CrossRef");return this.updateSourceIndicator("crossref","found"),[a]}if("isbn"===this.currentTab){const t=await fetch(`https://api.crossref.org/works?filter=isbn:${encodeURIComponent(Utils.cleanISBN(e))}&rows=5`),n=await t.json();if(!n.message?.items||0===n.message.items.length)return this.updateSourceIndicator("crossref","not-found"),[];const r=n.message.items.map(e=>Utils.normalizeBook({id:e.DOI||Utils.generateId(),title:Array.isArray(e.title)?e.title[0]:e.title,authors:(e.author||[]).map(e=>`${e.given||""} ${e.family||""}`.trim()),publisher:e.publisher,publishedDate:e.published?.["date-parts"]?.[0]?.join("-"),isbn:e.ISBN?.[0],pageCount:e.page,language:e.language,categories:e.subject,description:e.abstract?e.abstract.replace(/<[^>]*>/g,""):null,infoLink:e.URL||`https://doi.org/${e.DOI}`,doi:e.DOI,source:"CrossRef"},"CrossRef"));return this.updateSourceIndicator("crossref","found"),r}return this.updateSourceIndicator("crossref","not-found"),[]}catch(e){return console.error("CrossRef error:",e),this.updateSourceIndicator("crossref","not-found"),[]}},deduplicateResults(e){const t=new Set;return e.filter(e=>{const n=e.isbn||`${e.title}|${(e.authors||[]).join(",")}`;return!t.has(n)&&(t.add(n),!0)})},updateSourceIndicator(e,t){const n=document.querySelector(`.source-indicator[data-source="${e}"]`);n&&(n.classList.remove("searching","found","not-found"),n.classList.add(t))},showLoading(e){const t=document.getElementById("loadingState"),n=document.getElementById("emptyState"),r=document.getElementById("resultsContainer");e?(t.classList.remove("hidden"),n.classList.add("hidden"),r.classList.add("hidden"),document.querySelectorAll(".source-indicator").forEach(e=>{e.classList.remove("searching","found","not-found")})):(t.classList.add("hidden"),this.isSearching=!1)},clearResults(){document.getElementById("resultsContainer").innerHTML="",document.getElementById("resultsContainer").classList.add("hidden"),document.getElementById("emptyState").classList.remove("hidden")},displayResults(e){const t=document.getElementById("resultsContainer"),n=document.getElementById("emptyState");if(t.innerHTML="",0===e.length)return t.classList.add("hidden"),void n.classList.remove("hidden");t.classList.remove("hidden"),n.classList.add("hidden"),e.forEach(e=>{const n=this.createResultCard(e);t.appendChild(n)})},createResultCard(e){const t=document.createElement("div");t.className="result-card";const n=Storage.isFavorite(e.id),r=e.coverUrl?`<img src="${e.coverUrl}" alt="${e.title}" loading="lazy" onerror="this.parentElement.innerHTML='<span style=font-size:2.5rem>&#128213;</span>'">`:'<span style="font-size:2.5rem">&#128213;</span>',i=e.authors?.length>0?e.authors.join(", "):"Autor desconocido",a=Utils.formatYear(e.publishedDate);t.innerHTML=`<div class="result-header"><div class="result-cover">${r}</div><div class="result-info"><h3 class="result-title">${e.title}</h3><p class="result-authors">${i}</p><div class="result-meta">${e.publisher?`<span class="meta-tag">&#127970; ${e.publisher}</span>`:""}${a?`<span class="meta-tag">&#128197; ${a}</span>`:""}${e.isbn?`<span class="meta-tag">&#128443; ${Utils.formatISBN(e.isbn)}</span>`:""}${e.pageCount?`<span class="meta-tag">&#128196; ${e.pageCount} pag.</span>`:""}${e.language?`<span class="meta-tag">&#127760; ${e.language.toUpperCase()}</span>`:""}<span class="result-source source-${e.source.toLowerCase().replace(/s/g,"")}">&#128451; ${e.source}</span></div>${e.description?`<p class="result-description">${Utils.truncate(e.description,250)}</p>`:""}<div class="result-actions"><button class="btn-action favorite ${n?"active":""}" data-id="${e.id}"><span class="icon">&#11088;</span> ${n?"Favorito":"Favorito"}</button><button class="btn-action details" data-id="${e.id}"><span class="icon">&#128065;</span> Ver detalles</button>${e.infoLink?`<a href="${e.infoLink}" target="_blank" class="btn-action">&#128279; Ver fuente</a>`:""}</div></div></div><div class="result-footer"><div class="export-buttons"><button class="btn-export" data-format="bibtex" data-id="${e.id}">&#128203; BibTeX</button><button class="btn-export" data-format="ris" data-id="${e.id}">&#128196; RIS</button><button class="btn-export" data-format="csv" data-id="${e.id}">&#128202; CSV</button><button class="btn-export" data-format="json" data-id="${e.id}">&#128203; JSON</button></div><span class="result-date">${Utils.formatDate(e.timestamp)}</span></div>`;return t.querySelector(".favorite").addEventListener("click",t=>{const r=Storage.toggleFavorite(e),i=t.currentTarget;i.classList.toggle("active",r),i.innerHTML=`<span class="icon">&#11088;</span> ${r?"Favorito":"Favorito"}`,this.loadFavorites()}),t.querySelector(".details").addEventListener("click",()=>{this.showDetails(e)}),t.querySelectorAll(".btn-export").forEach(t=>{t.addEventListener("click",()=>{const n=t.dataset.format;this.exportBook(e,n)})}),t},setupModal(){const e=document.getElementById("detailModal"),t=document.getElementById("modalClose");t.addEventListener("click",()=>e.classList.remove("active")),e.addEventListener("click",t=>{t.target===e&&e.classList.remove("active")}),document.addEventListener("keydown",t=>{"Escape"===t.key&&e.classList.remove("active")})},showDetails(e){const t=document.getElementById("detailModal"),n=document.getElementById("modalBody"),r=e.coverUrl?`<img src="${e.coverUrl}" alt="${e.title}">`:'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.5);font-size:3rem;">&#128213;</div>',i=e.authors?.length>0?e.authors.join(", "):"Autor desconocido",a=Utils.formatYear(e.publishedDate);n.innerHTML=`<div class="modal-body"><div class="modal-cover">${r}</div><h2 class="modal-title">${e.title}</h2><p class="modal-authors">${i}</p><div class="detail-grid">${e.publisher?`<div class="detail-item"><div class="detail-label">Editorial</div><div class="detail-value">${e.publisher}</div></div>`:""}${a?`<div class="detail-item"><div class="detail-label">Ano de publicacion</div><div class="detail-value">${a}</div></div>`:""}${e.isbn?`<div class="detail-item"><div class="detail-label">ISBN</div><div class="detail-value">${Utils.formatISBN(e.isbn)}</div></div>`:""}${e.isbn13?`<div class="detail-item"><div class="detail-label">ISBN-13</div><div class="detail-value">${Utils.formatISBN(e.isbn13)}</div></div>`:""}${e.isbn10?`<div class="detail-item"><div class="detail-label">ISBN-10</div><div class="detail-value">${Utils.formatISBN(e.isbn10)}</div></div>`:""}${e.pageCount?`<div class="detail-item"><div class="detail-label">Paginas</div><div class="detail-value">${e.pageCount}</div></div>`:""}${e.language?`<div class="detail-item"><div class="detail-label">Idioma</div><div class="detail-value">${e.language.toUpperCase()}</div></div>`:""}${e.doi?`<div class="detail-item"><div class="detail-label">DOI</div><div class="detail-value">${e.doi}</div></div>`:""}<div class="detail-item"><div class="detail-label">Fuente</div><div class="detail-value">${e.source}</div></div></div>${e.categories?.length>0?`<div class="detail-item" style="margin-bottom:1rem;"><div class="detail-label">Categorias</div><div class="detail-value">${e.categories.join(", ")}</div></div>`:""}${e.description?`<div class="modal-description"><strong>Descripcion:</strong><br>${e.description}</div>`:""}<div class="modal-actions"><button class="btn-export" onclick="App.exportBookById('${e.id}','bibtex')">&#128203; BibTeX</button><button class="btn-export" onclick="App.exportBookById('${e.id}','ris')">&#128196; RIS</button><button class="btn-export" onclick="App.exportBookById('${e.id}','csv')">&#128202; CSV</button><button class="btn-export" onclick="App.exportBookById('${e.id}','json')">&#128203; JSON</button></div></div>`,t.classList.add("active")},exportBook(e,t){let n,r,i;switch(t){case"bibtex":n=Utils.exportBibTeX(e),r=`${Utils.removeAccents(e.title).replace(/[^a-zA-Z0-9]/g,"_").substring(0,30)}.bib`,i="application/x-bibtex";break;case"ris":n=Utils.exportRIS(e),r=`${Utils.removeAccents(e.title).replace(/[^a-zA-Z0-9]/g,"_").substring(0,30)}.ris`,i="application/x-research-info-systems";break;case"csv":n=Utils.exportCSV(e),r=`${Utils.removeAccents(e.title).replace(/[^a-zA-Z0-9]/g,"_").substring(0,30)}.csv`,i="text/csv";break;case"json":n=Utils.exportJSON(e),r=`${Utils.removeAccents(e.title).replace(/[^a-zA-Z0-9]/g,"_").substring(0,30)}.json`,i="application/json"}Utils.downloadFile(n,r,i),Utils.showToast(`Exportado como ${t.toUpperCase()}`,"success")},exportBookById(e,t){const n=this.currentResults.find(t=>t.id===e)||Storage.getFavorites().find(t=>t.id===e);n&&this.exportBook(n,t)},setupHistory(){document.getElementById("clearHistory")?.addEventListener("click",()=>{confirm("Eliminar todo el historial de busquedas?")&&(Storage.clearHistory(),this.loadHistory(),Utils.showToast("Historial eliminado","info"))})},loadHistory(){const e=Storage.getHistory(),t=document.getElementById("historyList"),n=document.getElementById("historyEmpty");if(0===e.length)return t.classList.add("hidden"),void n.classList.remove("hidden");t.classList.remove("hidden"),n.classList.add("hidden"),t.innerHTML=e.slice().reverse().map(e=>{const t={isbn:"&#128443;",titulo:"&#128240;",autor:"&#128100;",doi:"&#128279;"},n=new Date(e.timestamp),r=n.toLocaleString("es-ES",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});return`<div class="history-item" data-id="${e.id}"><div class="history-icon"><span class="icon">${t[e.type]||"&#128269;"}</span></div><div class="history-info"><div class="history-query">${e.query}</div><div class="history-details"><span>&#128269; ${e.type.toUpperCase()}</span><span>&#128203; ${e.resultsCount} resultado(s)</span><span>&#128368; ${r}</span></div></div><div class="history-actions"><button class="history-btn search-again" title="Buscar de nuevo">&#128269;</button><button class="history-btn delete" title="Eliminar">&#128465;</button></div></div>`}).join(""),t.querySelectorAll(".history-item").forEach(t=>{const n=t.dataset.id,r=e.find(e=>e.id===n);t.querySelector(".search-again").addEventListener("click",()=>{document.querySelector(`.tab-btn[data-tab="${r.type}"]`)?.click(),document.getElementById("searchInput").value=r.query,document.querySelector('.nav-link[href="#buscar"]')?.click(),this.performSearch()}),t.querySelector(".delete").addEventListener("click",()=>{Storage.removeHistory(n),this.loadHistory()})})},setupFavorites(){document.getElementById("clearFavorites")?.addEventListener("click",()=>{confirm("Eliminar todos los favoritos?")&&(Storage.clearFavorites(),this.loadFavorites(),Utils.showToast("Favoritos eliminados","info"))})},loadFavorites(){const e=Storage.getFavorites(),t=document.getElementById("favoritesList"),n=document.getElementById("favoritesEmpty");if(0===e.length)return t.classList.add("hidden"),void n.classList.remove("hidden");t.classList.remove("hidden"),n.classList.add("hidden"),t.innerHTML="",e.forEach(e=>{const n=this.createResultCard(e);t.appendChild(n)})}};document.addEventListener("DOMContentLoaded",()=>{App.init()});
+</script>
+</body>
+</html>
