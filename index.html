@@ -1952,6 +1952,16 @@ const Utils = {
         }
 
         return normalized;
+    },
+
+    /**
+     * Fetch con tiempo máximo de espera (evita búsquedas colgadas)
+     */
+    fetchWithTimeout(url, options = {}, timeout = 8000) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeout);
+        return fetch(url, { ...options, signal: controller.signal })
+            .finally(() => clearTimeout(timer));
     }
 };
 
@@ -2378,7 +2388,7 @@ const App = {
             else if (type === 'titulo') searchQuery = `intitle:"${query}"`;
             
             const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchQuery)}&maxResults=10&langRestrict=es`;
-            const response = await fetch(url);
+            const response = await Utils.fetchWithTimeout(url);
             const data = await response.json();
             
             if (!data.items || data.items.length === 0) {
@@ -2437,7 +2447,7 @@ const App = {
                 url = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=10`;
             }
             
-            const response = await fetch(url);
+            const response = await Utils.fetchWithTimeout(url);
             
             if (type === 'isbn') {
                 if (!response.ok) {
@@ -2451,7 +2461,7 @@ const App = {
                 if (data.authors) {
                     for (const author of data.authors.slice(0, 3)) {
                         try {
-                            const authorRes = await fetch(`https://openlibrary.org${author.key}.json`);
+                            const authorRes = await Utils.fetchWithTimeout(`https://openlibrary.org${author.key}.json`);
                             const authorData = await authorRes.json();
                             authors.push(authorData.name);
                         } catch (e) { /* ignore */ }
@@ -2524,7 +2534,7 @@ const App = {
             if (this.currentTab === 'doi' || query.startsWith('10.')) {
                 const doi = query.replace(/^doi:/i, '').trim();
                 const url = `https://api.crossref.org/works/${encodeURIComponent(doi)}`;
-                const response = await fetch(url);
+                const response = await Utils.fetchWithTimeout(url);
                 
                 if (!response.ok) {
                     this.updateSourceIndicator('crossref', 'not-found');
@@ -2557,7 +2567,7 @@ const App = {
             // Para ISBN
             if (this.currentTab === 'isbn') {
                 const url = `https://api.crossref.org/works?filter=isbn:${encodeURIComponent(Utils.cleanISBN(query))}&rows=5`;
-                const response = await fetch(url);
+                const response = await Utils.fetchWithTimeout(url);
                 const data = await response.json();
                 
                 if (!data.message?.items || data.message.items.length === 0) {
@@ -2616,7 +2626,7 @@ const App = {
             const fl = fields.map(f => `fl[]=${f}`).join('&');
             const url = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(q)} AND mediatype:texts&${fl}&rows=10&page=1&output=json`;
 
-            const response = await fetch(url);
+            const response = await Utils.fetchWithTimeout(url);
             const data = await response.json();
 
             const docs = data.response?.docs;
@@ -2674,7 +2684,7 @@ const App = {
                 url = `https://www.loc.gov/books/?fo=json&c=10&q=${encodeURIComponent(query)}`;
             }
 
-            const response = await fetch(url);
+            const response = await Utils.fetchWithTimeout(url);
             const data = await response.json();
 
             const docs = data.results;
