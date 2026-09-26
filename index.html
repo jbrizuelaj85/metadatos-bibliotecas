@@ -628,6 +628,8 @@ body {
 .source-google { background: rgba(66, 133, 244, 0.1); color: #4285f4; }
 .source-openlib { background: rgba(255, 111, 0, 0.1); color: #e65100; }
 .source-crossref { background: rgba(0, 188, 212, 0.1); color: #00838f; }
+.source-internetarchive { background: rgba(123, 63, 228, 0.1); color: #7b3fe4; }
+.source-libraryofcongress { background: rgba(183, 28, 28, 0.1); color: #b71c1c; }
 
 .result-description {
     color: var(--text-secondary);
@@ -1438,7 +1440,7 @@ body {
 <label class="checkbox-label">
 <input type="checkbox" id="multiSource" checked>
 <span class="checkmark">&#10003;</span>
-Buscar en multiples fuentes (Google Books, Open Library, CrossRef)
+Buscar en multiples fuentes (Google Books, Open Library, Internet Archive, Library of Congress, CrossRef)
 </label>
 </div>
 </div>
@@ -1450,6 +1452,8 @@ Buscar en multiples fuentes (Google Books, Open Library, CrossRef)
 <span class="source-indicator" data-source="google"><span class="icon">&#128270;</span> Google Books</span>
 <span class="source-indicator" data-source="openlib"><span class="icon">&#128218;</span> Open Library</span>
 <span class="source-indicator" data-source="crossref"><span class="icon">&#127891;</span> CrossRef</span>
+<span class="source-indicator" data-source="archive"><span class="icon">&#128190;</span> Internet Archive</span>
+<span class="source-indicator" data-source="loc"><span class="icon">&#127963;</span> Library of Congress</span>
 </div>
 </div>
 
@@ -1541,6 +1545,8 @@ Buscar en multiples fuentes (Google Books, Open Library, CrossRef)
 <li><span class="icon">&#128270;</span> <strong>Google Books API</strong> - Millones de libros con metadatos completos</li>
 <li><span class="icon">&#128218;</span> <strong>Open Library</strong> - Catalogo abierto de Internet Archive</li>
 <li><span class="icon">&#127891;</span> <strong>CrossRef</strong> - Metadatos de literatura academica y DOI</li>
+<li><span class="icon">&#128190;</span> <strong>Internet Archive</strong> - Millones de libros digitalizados en acceso abierto</li>
+<li><span class="icon">&#127963;</span> <strong>Library of Congress</strong> - Catalogo de la Biblioteca del Congreso de EE.UU.</li>
 </ul>
 </div>
 </div>
@@ -1549,7 +1555,7 @@ Buscar en multiples fuentes (Google Books, Open Library, CrossRef)
 
 <footer class="app-footer">
 <p><span class="icon">&#128214;</span> Metadatos para Bibliotecas - App web gratuita</p>
-<p class="footer-note">Datos proporcionados por Google Books, Open Library y CrossRef</p>
+<p class="footer-note">Datos proporcionados por Google Books, Open Library, Internet Archive, Library of Congress y CrossRef</p>
 </footer>
 
 <div id="toastContainer" class="toast-container"></div>
@@ -1948,6 +1954,7 @@ const Utils = {
         return normalized;
     }
 };
+
 /**
  * STORAGE - Metadatos para Bibliotecas
  * Gestión de historial y favoritos con localStorage
@@ -2136,6 +2143,7 @@ const Storage = {
         this.set(this.KEYS.SETTINGS, { ...current, ...settings });
     }
 };
+
 /**
  * APP - Metadatos para Bibliotecas
  * Lógica principal: navegación, búsqueda, resultados
@@ -2312,6 +2320,8 @@ const App = {
                 } else {
                     promises.push(this.searchGoogleBooks(query, this.currentTab));
                     promises.push(this.searchOpenLibrary(query, this.currentTab));
+                    promises.push(this.searchInternetArchive(query, this.currentTab));
+                    promises.push(this.searchLibraryOfCongress(query, this.currentTab));
                     if (this.currentTab === 'isbn') {
                         promises.push(this.searchCrossRef(query));
                     }
@@ -2583,6 +2593,123 @@ const App = {
         } catch (error) {
             console.error('CrossRef error:', error);
             this.updateSourceIndicator('crossref', 'not-found');
+            return [];
+        }
+    },
+
+    async searchInternetArchive(query, type) {
+        this.updateSourceIndicator('archive', 'searching');
+
+        try {
+            let q;
+            if (type === 'isbn') {
+                q = `isbn:${Utils.cleanISBN(query)}`;
+            } else if (type === 'autor') {
+                q = `creator:("${query}")`;
+            } else if (type === 'titulo') {
+                q = `title:("${query}")`;
+            } else {
+                q = query;
+            }
+
+            const fields = ['identifier', 'title', 'creator', 'date', 'publisher', 'language', 'isbn', 'description', 'subject'];
+            const fl = fields.map(f => `fl[]=${f}`).join('&');
+            const url = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(q)} AND mediatype:texts&${fl}&rows=10&page=1&output=json`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            const docs = data.response?.docs;
+            if (!docs || docs.length === 0) {
+                this.updateSourceIndicator('archive', 'not-found');
+                return [];
+            }
+
+            const results = docs.map(doc => {
+                const isbnArr = Array.isArray(doc.isbn) ? doc.isbn : (doc.isbn ? [doc.isbn] : []);
+                const language = Array.isArray(doc.language) ? doc.language[0] : doc.language;
+                const categories = Array.isArray(doc.subject) ? doc.subject : (doc.subject ? [doc.subject] : []);
+                const description = Array.isArray(doc.description) ? doc.description.join(' ') : doc.description;
+
+                return Utils.normalizeBook({
+                    id: doc.identifier || Utils.generateId(),
+                    title: doc.title,
+                    authors: doc.creator,
+                    publisher: doc.publisher,
+                    publishedDate: doc.date,
+                    isbn: isbnArr.find(i => i && i.length === 13) || isbnArr[0],
+                    isbn13: isbnArr.find(i => i && i.length === 13),
+                    isbn10: isbnArr.find(i => i && i.length === 10),
+                    language: language,
+                    categories: categories,
+                    description: description,
+                    coverUrl: doc.identifier ? `https://archive.org/services/img/${doc.identifier}` : null,
+                    infoLink: doc.identifier ? `https://archive.org/details/${doc.identifier}` : null,
+                    source: 'Internet Archive'
+                }, 'Internet Archive');
+            });
+
+            this.updateSourceIndicator('archive', 'found');
+            return results;
+
+        } catch (error) {
+            console.error('Internet Archive error:', error);
+            this.updateSourceIndicator('archive', 'not-found');
+            return [];
+        }
+    },
+
+    async searchLibraryOfCongress(query, type) {
+        this.updateSourceIndicator('loc', 'searching');
+
+        try {
+            let url;
+            if (type === 'isbn') {
+                url = `https://www.loc.gov/isbn/${encodeURIComponent(Utils.cleanISBN(query))}/?fo=json&c=10`;
+            } else if (type === 'autor') {
+                url = `https://www.loc.gov/books/?fo=json&c=10&q=${encodeURIComponent(`contributor:"${query}"`)}`;
+            } else if (type === 'titulo') {
+                url = `https://www.loc.gov/books/?fo=json&c=10&q=${encodeURIComponent(`title:"${query}"`)}`;
+            } else {
+                url = `https://www.loc.gov/books/?fo=json&c=10&q=${encodeURIComponent(query)}`;
+            }
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            const docs = data.results;
+            if (!docs || docs.length === 0) {
+                this.updateSourceIndicator('loc', 'not-found');
+                return [];
+            }
+
+            const results = docs.map(doc => {
+                const title = Array.isArray(doc.title) ? doc.title[0] : doc.title;
+                const language = Array.isArray(doc.language) ? doc.language[0] : doc.language;
+                const categories = Array.isArray(doc.subject) ? doc.subject : (doc.subject ? [doc.subject] : []);
+                const description = Array.isArray(doc.description) ? doc.description.join(' ') : doc.description;
+
+                return Utils.normalizeBook({
+                    id: doc.id || (doc.number && doc.number[0]) || Utils.generateId(),
+                    title: title,
+                    authors: doc.contributor,
+                    publisher: doc.publisher,
+                    publishedDate: doc.date,
+                    language: language,
+                    categories: categories,
+                    description: description,
+                    coverUrl: doc.image_url?.[0] || null,
+                    infoLink: doc.id || doc.url,
+                    source: 'Library of Congress'
+                }, 'Library of Congress');
+            });
+
+            this.updateSourceIndicator('loc', 'found');
+            return results;
+
+        } catch (error) {
+            console.error('Library of Congress error:', error);
+            this.updateSourceIndicator('loc', 'not-found');
             return [];
         }
     },
@@ -3014,7 +3141,6 @@ const App = {
 document.addEventListener('DOMContentLoaded', () => {
     App.init();
 });
-
 </script>
 </body>
 </html>
